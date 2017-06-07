@@ -5,45 +5,55 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.hardware.fingerprint.FingerprintManager;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
-    private TextView accText;
-    private TextView cameraText;
-    private TextView fingerText;
-    private TextView locationText;
 
+    @BindView(R.id.main_accTxt)
+    TextView accText;
+
+    @BindView(R.id.cameraTxt)
+    TextView cameraText;
+
+    @BindView(R.id.fingerprintTxt)
+    TextView fingerText;
+
+    @BindView(R.id.locationTxt)
+    TextView locationText;
+
+    @BindView(R.id.mojaNazwaObiektuId)
+    LinearLayout dummyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         //// TODO: init sensor manager and sensor
         mSensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
         accText = (TextView)findViewById(R.id.main_accTxt);
-        cameraText = (TextView) findViewById(R.id.cameraTxt);
-        fingerText = (TextView) findViewById(R.id.fingerprintTxt);
-        locationText = (TextView) findViewById(R.id.locationTxt);
         if (getSystemService(CAMERA_SERVICE) != null) {
             cameraText.setText("Kamera dostępna!\n");
         }
         else {
             cameraText.setText("Kamera niedostepna!\n");
         }
-        if (getSystemService(FINGERPRINT_SERVICE) != null) {
-            fingerText.setText("Czytnik linii papilarnych dostępny!\n");
-        }
-        else {
-            fingerText.setText("Czytnik linii papilarnych niedostępny!\n");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkFingerService();
         }
         if (getSystemService(LOCATION_SERVICE) != null) {
             locationText.setText("Usługi lokalizacji dostępne!\n");
@@ -53,6 +63,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+    }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void checkFingerService() {
+        FingerprintManager fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
+        if (fingerprintManager != null && fingerprintManager.isHardwareDetected()) {
+            fingerText.setText("Czytnik linii papilarnych jest dostepny!\n");
+            //use fingerprintManager
+        } else {
+            fingerText.setText("Czytnik linii papilarnych jest niedostepny\n");
+        }
     }
 
     @Override
