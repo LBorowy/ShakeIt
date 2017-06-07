@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ShakeIt.iml" filepath="$PROJECT_DIR$/ShakeIt.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/colors/colors.iml" filepath="$PROJECT_DIR$/colors/colors.iml" />
     </modules>
   </component>
 </project>

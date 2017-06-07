@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import pl.lborowy.colorconverter.ColorConverter;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ButterKnife.bind(this);
         //// TODO: init sensor manager and sensor
         mSensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         accText = (TextView)findViewById(R.id.main_accTxt);
         if (getSystemService(CAMERA_SERVICE) != null) {
             cameraText.setText("Kamera dostępna!\n");
@@ -108,8 +110,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             int g = (int)Math.abs(y)*20;
             int b = (int)Math.abs(z)*20;
 
-            int color = Color.rgb(r,g,b);
-            int negativeColor = Color.rgb(255-r,255-g,255-b);
+            // przed stworzeniem biblioteki color
+//            int color = Color.rgb(r,g,b);
+//            int negativeColor = Color.rgb(255-r,255-g,255-b);
+            // po stworzeniu biblioteki color
+            int color = ColorConverter.getColorFromPosition(x,y,z);
+            int negativeColor = ColorConverter.getNegativeColorFromPosition(color);
 
             accText.setBackgroundColor(color);
             accText.setTextColor(negativeColor);
